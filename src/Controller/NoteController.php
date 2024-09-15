@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class NoteController extends AbstractController
 {
-    #[Route('/api/notes', name: 'note', methods: ['GET'])]
+    #[Route('/api/notes', name: 'listNote', methods: ['GET'])]
     public function getNoteList(NoteRepository $noteRepository, SerializerInterface $serializer): JsonResponse
     {
         $noteList = $noteRepository->findAll();
@@ -58,7 +58,13 @@ class NoteController extends AbstractController
         
         $em->persist($updatedNote);
         $em->flush();
-        
+
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
    }
+
+   #[Route('/', name: 'crud_notes')]
+    public function crudNotes(): Response
+    {
+        return $this->render('note/crud.html.twig');
+    }
 }

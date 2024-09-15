@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Notes</title>
+    <script>
+        const baseUrl = 'https://127.0.0.1:8000/api/notes';
+
+        function getNotes() {
+            fetch(baseUrl)
+                .then(response => response.json())
+                .then(data => {
+                    let notes = data.map(note => `ID: ${note.id}, Name: ${note.name}, Note: ${note.note}`).join('<br>');
+                    document.getElementById('output').innerHTML = notes;
+                })
+                .catch(error => console.error('Error fetching notes:', error));
+        }
+
+        function createNote() {
+            const name = prompt('Entrez le nom de l\'élève:');
+            const note = prompt('Entrez la valeur de la note:');
+            const newNote = {
+                name: name,
+                note: parseFloat(note)
+            };
+
+            fetch(baseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newNote),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Note créée avec succès !');
+                    getNotes();
+                } else {
+                    alert('Erreur lors de la création de la note.');
+                }
+            })
+            .catch(error => console.error('Error creating note:', error));
+        }
+
+        function updateNote() {
+            const id = prompt('Entrez l\'ID de la note à mettre à jour:');
+            const name = prompt('Entrez le nouveau nom de l\'élève:');
+            const note = prompt('Entrez la nouvelle valeur de la note:');
+            const updatedNote = {
+                name: name,
+                note: parseFloat(note)
+            };
+
+            fetch(`${baseUrl}/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedNote),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Note mise à jour avec succès !');
+                    getNotes();
+                } else {
+                    alert('Erreur lors de la mise à jour de la note.');
+                }
+            })
+            .catch(error => console.error('Error updating note:', error));
+        }
+
+        function deleteNote() {
+            const id = prompt('Entrez l\'ID de la note à supprimer:');
+
+            fetch(`${baseUrl}/${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Note supprimée avec succès !');
+                    getNotes();
+                } else {
+                    alert('Erreur lors de la suppression de la note.');
+                }
+            })
+            .catch(error => console.error('Error deleting note:', error));
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Gestion des Notes</h1>
+    
+    <button onclick="getNotes()">Afficher toutes les notes</button>
+    <button onclick="createNote()">Créer une nouvelle note</button>
+    <button onclick="updateNote()">Mettre à jour une note</button>
+    <button onclick="deleteNote()">Supprimer une note</button>
+
+    <div id="output" style="margin-top: 20px; font-family: monospace;"></div>
+
+</body>
+</html>
