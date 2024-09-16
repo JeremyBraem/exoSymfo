@@ -61,10 +61,4 @@ class NoteController extends AbstractController
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
    }
-
-   #[Route('/', name: 'crud_notes')]
-    public function crudNotes(): Response
-    {
-        return $this->render('note/crud.html.twig');
-    }
 }
